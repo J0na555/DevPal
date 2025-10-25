@@ -1,0 +1,39 @@
+# Python
+*.pyc
+__pycache__/
+.Python
+env/
+venv/
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Django-specific
+*.log
+*.pot
+local_settings.py
+db.sqlite3
+media/  # Or wherever your user-uploaded media files are stored
+static_compiled/ # If you compile static files into a separate directory
+
+# IDE-specific (e.g., PyCharm, VS Code)
+.idea/
+.vscode/
+
+# Operating System Files
+.DS_Store
+Thumbs.db
+
+# Other
+.coverage
+.tox/
+.eggs/
+
+apps/core/migrations
+apps/projects/migrations
+apps/users/migrations
+apps/users/__pycache__
+apps/core/__pycache__
+apps/projects/__pycache__
+
+
+.env
