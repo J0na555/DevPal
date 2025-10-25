@@ -1,0 +1,46 @@
+/* Basic styles for login page wrapper */
+body .login-page { 
+    display:flex; 
+    align-items:center; 
+    justify-content:center; 
+    min-height:60vh; 
+    padding:40px 16px; 
+}
+.auth-card { 
+    background:#fff; 
+    border-radius:8px; 
+    box-shadow:0 6px 18px rgba(0,0,0,0.08); 
+    padding:28px; 
+    max-width:420px; 
+    width:100%; 
+}
+.auth-card h2 { 
+    margin:0 0 12px; 
+    font-size:1.6rem; 
+}
+.auth-card .muted { 
+    color:#666; 
+    font-size:0.95rem; 
+    margin-top:12px; 
+}
+
+/* Buttons */
+.btn { 
+    display:inline-block; 
+    padding:10px 14px; 
+    border-radius:6px; 
+    text-decoration:none; 
+    border:1px solid #ddd; 
+    background:#f7f7f7; 
+    color:#222; 
+}
+.btn.primary { 
+    background:#2563eb; 
+    color:#fff; 
+    border-color:transparent; 
+}
+
+@media (max-width:520px){ .auth-card{ 
+    padding:20px; 
+    } 
+}

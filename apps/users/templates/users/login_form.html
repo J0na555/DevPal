@@ -1,0 +1,20 @@
+{% load static %}
+<link rel="stylesheet" href="{% static 'users/css/login_form.css' %}">
+<form method="post" class="login-form" novalidate>
+	{% csrf_token %}
+	{% if form.non_field_errors %}
+		<div class="form-errors">{{ form.non_field_errors }}</div>
+	{% endif %}
+	<div class="field">
+		{{ form.username.label_tag }}
+		{{ form.username }}
+		{% if form.username.errors %}<div class="field-error">{{ form.username.errors }}</div>{% endif %}
+	</div>
+	<div class="field">
+		{{ form.password.label_tag }}
+		{{ form.password }}
+		{% if form.password.errors %}<div class="field-error">{{ form.password.errors }}</div>{% endif %}
+	</div>
+	<button type="submit" class="btn primary">Log in</button>
+</form>
+

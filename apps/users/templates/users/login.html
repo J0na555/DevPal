@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Login{% endblock %}
+
+{% block content %}
+<link rel="stylesheet" href="{% static 'users/css/login.css' %}">
+<div class="auth-page login-page">
+	<div class="auth-card">
+		<h2>Welcome back</h2>
+		{% include 'users/login_form.html' %}
+		<p class="muted">Don't have an account? <a href="{% url 'users:register' %}">Register</a></p>
+	</div>
+</div>
+{% endblock %}
+

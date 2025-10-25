@@ -27,7 +27,6 @@ Thumbs.db
 .coverage
 .tox/
 .eggs/
-
 apps/core/migrations
 apps/projects/migrations
 apps/users/migrations

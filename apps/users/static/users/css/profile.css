@@ -1,0 +1,51 @@
+/* Profile page styles */
+.profile-page { 
+    display:flex; 
+    align-items:center; 
+    justify-content:center; 
+    padding:40px 16px; 
+}
+.profile-card { 
+    display:flex; 
+    gap:18px; 
+    align-items:center; 
+    background:#fff; 
+    padding:20px; 
+    border-radius:10px; 
+    box-shadow:0 6px 20px rgba(0,0,0,0.06); 
+    max-width:760px; 
+    width:100%; 
+}
+.avatar img{ 
+    width:96px; 
+    height:96px; 
+    border-radius:50%; 
+    object-fit:cover; 
+}
+.avatar-placeholder{ 
+    width:96px; 
+    height:96px; 
+    border-radius:50%; 
+    display:flex; 
+    align-items:center; 
+    justify-content:center; 
+    background:#e6e6e6; 
+    color:#555; 
+    font-size:32px; 
+}
+.profile-info h2{ 
+    margin:0 0 6px; 
+}
+.profile-info .muted{ 
+    color:#666; 
+    margin-bottom:12px; 
+}
+.btn{ 
+    margin-right:8px; 
+}
+
+@media (max-width:640px){ .profile-card{ 
+    flex-direction:column; 
+    text-align:center; 
+    } 
+}
