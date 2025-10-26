@@ -1,32 +1,9 @@
-/* Register page styles reuse login layout */
-.register-page { 
-    display:flex; 
-    align-items:center; 
-    justify-content:center; 
-    min-height:60vh; 
-    padding:40px 16px; 
-}
-.register-page .auth-card { 
-    max-width:520px; 
-    padding:28px; 
-    border-radius:8px; 
-    box-shadow:0 6px 18px rgba(0,0,0,0.06); 
-    background:#fff; 
-}
-.register-form { 
-    display:flex; 
-    flex-direction:column; 
-    gap:12px; 
-}
-.register-form .field input { 
-    padding:10px 12px; 
-    border:1px solid #ddd; 
-    border-radius:6px; 
-}
-.form-errors{ 
-    color:#b91c1c; 
-}
-.muted{ 
-    color:#666; 
-    margin-top:10px; 
-}
+/* Register page - black theme */
+body{ background:#000; color:#e6e6e6; }
+.register-page { display:flex; align-items:center; justify-content:center; min-height:60vh; padding:40px 16px; }
+.register-page .auth-card { max-width:520px; padding:28px; border-radius:8px; box-shadow:0 6px 20px rgba(0,0,0,0.6); background:#0f0f0f; border:1px solid #222; }
+.register-form { display:flex; flex-direction:column; gap:12px; }
+.register-form .field input { padding:10px 12px; border:1px solid #333; border-radius:6px; background:#0b0b0b; color:#e6e6e6; }
+.form-errors{ color:#ff9b9b; background:transparent; }
+.muted{ color:#bcbcbc; margin-top:10px; }
+

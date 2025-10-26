@@ -1,6 +1,10 @@
 from django.db import models
-from django.contrib.auth.models import User
+from django.contrib.auth import get_user_model
 from django.contrib.postgres.fields import ArrayField
+
+
+User = get_user_model()
+
 
 class UserProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
@@ -11,6 +15,5 @@ class UserProfile(models.Model):
     availability_hours = models.IntegerField(default=10)
     preferred_roles = ArrayField(models.CharField(max_length=50), default=list)
 
-
     def __str__(self):
-        return self.user.username
+        return getattr(self.user, 'username', str(self.pk))
