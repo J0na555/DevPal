@@ -147,7 +147,7 @@ class AuthManager {
                         </button>
                     </form>
                     <div class="modal-footer">
-                        <p>Don't have an account? <a href="/api/users/register/">Register here</a></p>
+                        <p>Don't have an account? <a href="/api/users/register/" onclick="window.location.href='/api/users/register/'; return false;">Register here</a></p>
                     </div>
                 </div>
             </div>

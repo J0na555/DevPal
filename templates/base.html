@@ -226,8 +226,8 @@
                     <li><a href="#" data-action="profile"><i class="fas fa-user-circle"></i> Profile</a></li>
                     <li><a href="#" data-action="logout"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
                 {% else %}
-                    <li><a href="#" data-action="login"><i class="fas fa-sign-in-alt"></i> Login</a></li>
-                    <li><a href="/api/users/register/"><i class="fas fa-user-plus"></i> Register</a></li>
+                    <li><a href="{% url 'users:login' %}"><i class="fas fa-sign-in-alt"></i> Login</a></li>
+                    <li><a href="{% url 'users:register' %}"><i class="fas fa-user-plus"></i> Register</a></li>
                 {% endif %}
             </ul>
         </div>

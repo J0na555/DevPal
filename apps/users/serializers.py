@@ -43,3 +43,14 @@ class RegisterSerializer(serializers.Serializer):
         UserProfile.objects.create(user=user, **profile_data)
         return user
 
+class LoginSerializer(serializers.Serializer):
+    username = serializers.CharField()
+    password = serializers.CharField(write_only=True)
+
+    def validate(self, data):
+        username = data.get("username")
+        password = data.get("password")
+
+        if username and password:
+            return data
+        raise serializers.ValidationError("Both username and password are required!")
