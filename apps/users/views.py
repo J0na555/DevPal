@@ -1,61 +1,76 @@
-from rest_framework import generics, permissions, status
-from .serializers import RegisterSerializer, LoginSerializer
+from django.shortcuts import render, redirect
+from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.decorators import login_required
+from django.contrib import messages
+from django.views.generic import TemplateView
+from .forms import CustomUserCreationForm, LoginForm
 from .models import UserProfile
-from rest_framework.response import Response
-from django.contrib.auth import authenticate
-from rest_framework_simplejwt.tokens import RefreshToken
-from django.shortcuts import redirect
-
-# class RegisterView(generics.CreateAPIView):
-#     serializer_class = RegisterSerializer
-#     permission_classes = [permissions.AllowAny]
 
 
-class CustomRgisterView(generics.GenericAPIView):
-    queryset = UserProfile.objects.all()
-    serializer_class = RegisterSerializer
-    permission_classes = [permissions.AllowAny]
+class RegisterView(TemplateView):
     template_name = 'users/register.html'
-    context_object_name = 'user-registration'
-
-    def post(self, request):
-        pass
     
-
-
-class CustomLogin(generics.GenericAPIView):
-    queryset = UserProfile.objects.all()
-    serializer_class = LoginSerializer
-    permission_classes = [permissions.AllowAny]
-    template_name = 'users/login.html'
-    context_object_name = 'user-login'
-
+    def get(self, request):
+        if request.user.is_authenticated:
+            return redirect('projects:project_list')
+        form = CustomUserCreationForm()
+        return render(request, self.template_name, {'form': form})
+    
     def post(self, request):
-        serializer = self.get_serializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
+        if request.user.is_authenticated:
+            return redirect('projects:project_list')
+        
+        form = CustomUserCreationForm(request.POST)
+        if form.is_valid():
+            user = form.save()
+            username = form.cleaned_data.get('username')
+            messages.success(request, f'Account created for {username}!')
+            login(request, user)
+            return redirect('projects:project_list')
+        return render(request, self.template_name, {'form': form})
 
-        username = serializer.validated_data['username']
-        password = serializer.validated_data['password']
 
-        user = authenticate(request, username=username, password=password)
+class LoginView(TemplateView):
+    template_name = 'users/login.html'
+    
+    def get(self, request):
+        if request.user.is_authenticated:
+            return redirect('projects:project_list')
+        form = LoginForm()
+        return render(request, self.template_name, {'form': form})
+    
+    def post(self, request):
+        if request.user.is_authenticated:
+            return redirect('projects:project_list')
+        
+        form = LoginForm(request.POST)
+        if form.is_valid():
+            username = form.cleaned_data['username']
+            password = form.cleaned_data['password']
+            user = authenticate(request, username=username, password=password)
+            
+            if user is not None:
+                login(request, user)
+                messages.success(request, f'Welcome back, {username}!')
+                return redirect('projects:project_list')
+            else:
+                messages.error(request, 'Invalid username or password.')
+        return render(request, self.template_name, {'form': form})
 
-        if user is not None:
-            refresh = RefreshToken.for_user(user)
-            from .serializers import UserProfileSerializer
-            profile_serializer = UserProfileSerializer(user.userprofile)
 
-            return Response({
-                'refresh': str(refresh),
-                'access': str(refresh.access_token),
-                'user': {
-                    'id': user.id,
-                    'username': user.username,
-                    'email': user.email,
-                    'profile': profile_serializer.data
-                }
-            }, status=status.HTTP_200_OK)
-        else:
-            return Response({
-                'error': 'Invalid credentials'
-            }, status=status.HTTP_401_UNAUTHORIZED)
+@login_required
+def logout_view(request):
+    logout(request)
+    messages.info(request, 'You have been logged out.')
+    return redirect('projects:project_list')
+
+
+@login_required
+def profile_view(request):
+    try:
+        profile = request.user.userprofile
+    except UserProfile.DoesNotExist:
+        profile = UserProfile.objects.create(user=request.user)
+    
+    return render(request, 'users/profile.html', {'profile': profile})
 
