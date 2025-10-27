@@ -1,0 +1,214 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Discover Projects{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'projects/css/projects.css' %}">
+<style>
+    .discover-header {
+        text-align: center;
+        margin-bottom: 2rem;
+    }
+    
+    .discover-header h1 {
+        font-size: 2.5rem;
+        font-weight: 700;
+        background: linear-gradient(135deg, #00ff88 0%, #ffffff 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        margin-bottom: 0.5rem;
+    }
+    
+    .discover-header p {
+        color: rgba(255, 255, 255, 0.7);
+        font-size: 1.1rem;
+    }
+    
+    .view-toggle {
+        display: flex;
+        justify-content: center;
+        margin-bottom: 2rem;
+        gap: 1rem;
+    }
+    
+    .toggle-btn {
+        padding: 0.75rem 1.5rem;
+        background: rgba(255, 255, 255, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        border-radius: 25px;
+        color: rgba(255, 255, 255, 0.7);
+        cursor: pointer;
+        transition: all 0.3s ease;
+        font-weight: 500;
+    }
+    
+    .toggle-btn.active {
+        background: linear-gradient(135deg, #00ff88 0%, #00cc6a 100%);
+        color: #000;
+        border-color: transparent;
+    }
+    
+    .toggle-btn:hover {
+        background: rgba(255, 255, 255, 0.2);
+        color: #ffffff;
+    }
+    
+    .toggle-btn.active:hover {
+        background: linear-gradient(135deg, #00ff88 0%, #00cc6a 100%);
+        color: #000;
+    }
+    
+    .swipe-view {
+        display: block;
+    }
+    
+    .grid-view {
+        display: none;
+    }
+    
+    .swipe-instructions {
+        text-align: center;
+        margin-bottom: 2rem;
+        color: rgba(255, 255, 255, 0.6);
+    }
+    
+    .swipe-instructions i {
+        margin: 0 0.5rem;
+        color: #00ff88;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="discover-header">
+    <h1>Discover Projects</h1>
+    <p>Swipe through projects and find your perfect match</p>
+</div>
+
+<div class="view-toggle">
+    <button class="toggle-btn active" onclick="switchView('swipe')">
+        <i class="fas fa-mobile-alt"></i> Swipe Mode
+    </button>
+    <button class="toggle-btn" onclick="switchView('grid')">
+        <i class="fas fa-th"></i> Grid View
+    </button>
+</div>
+
+<!-- Swipe View -->
+<div id="swipe-view" class="swipe-view">
+    <div class="swipe-instructions">
+        <i class="fas fa-hand-paper"></i>
+        Swipe left to pass, right to join
+        <i class="fas fa-hand-paper"></i>
+    </div>
+    
+    <div id="swipe-container" class="swipe-container">
+        <div class="loading">
+            <div class="spinner"></div>
+        </div>
+    </div>
+    
+    <div class="action-buttons">
+        <!-- Action buttons will be dynamically added by JavaScript -->
+    </div>
+</div>
+
+<!-- Grid View -->
+<div id="grid-view" class="grid-view">
+    <div class="projects-grid" id="projects-grid">
+        <!-- Projects will be loaded dynamically -->
+    </div>
+</div>
+
+<script>
+let currentView = 'swipe';
+
+function switchView(view) {
+    currentView = view;
+    
+    // Update toggle buttons
+    document.querySelectorAll('.toggle-btn').forEach(btn => {
+        btn.classList.remove('active');
+    });
+    event.target.classList.add('active');
+    
+    // Show/hide views
+    document.getElementById('swipe-view').style.display = view === 'swipe' ? 'block' : 'none';
+    document.getElementById('grid-view').style.display = view === 'grid' ? 'block' : 'none';
+    
+    if (view === 'grid') {
+        loadGridView();
+    }
+}
+
+async function loadGridView() {
+    const gridContainer = document.getElementById('projects-grid');
+    
+    try {
+        const response = await fetch('/api/projects/api/');
+        const projects = await response.json();
+        
+        if (projects.length === 0) {
+            gridContainer.innerHTML = `
+                <div class="empty-state">
+                    <i class="fas fa-project-diagram"></i>
+                    <h3>No projects available</h3>
+                    <p>Be the first to create a project!</p>
+                    <a href="{% url 'projects:project_create' %}" class="btn btn-primary">
+                        <i class="fas fa-plus"></i> Create Project
+                    </a>
+                </div>
+            `;
+            return;
+        }
+        
+        gridContainer.innerHTML = projects.map(project => `
+            <div class="project-card slide-up" onclick="viewProject(${project.id})">
+                <h3>${project.title}</h3>
+                <p class="project-description">${project.description}</p>
+                <div class="card-tags">
+                    ${(project.tech_stack || []).map(tech => 
+                        `<span class="tag tech">${tech}</span>`
+                    ).join('')}
+                    ${(project.needed_roles || []).map(role => 
+                        `<span class="tag role">${role}</span>`
+                    ).join('')}
+                </div>
+                <div class="project-meta">
+                    <i class="fas fa-users"></i>
+                    ${project.members.length} members
+                    <i class="fas fa-calendar"></i>
+                    ${new Date(project.created_at).toLocaleDateString()}
+                </div>
+            </div>
+        `).join('');
+        
+    } catch (error) {
+        console.error('Error loading projects:', error);
+        gridContainer.innerHTML = `
+            <div class="empty-state">
+                <i class="fas fa-exclamation-triangle"></i>
+                <h3>Error loading projects</h3>
+                <p>Please try again later</p>
+            </div>
+        `;
+    }
+}
+
+function viewProject(projectId) {
+    window.location.href = `/api/projects/${projectId}/`;
+}
+
+// Initialize swipe manager when DOM is loaded
+document.addEventListener('DOMContentLoaded', function() {
+    if (document.getElementById('swipe-container')) {
+        window.swipeManager = new SwipeCardManager('swipe-container');
+    }
+});
+</script>
+
+<script src="{% static 'projects/js/swipe.js' %}"></script>
+<script src="{% static 'projects/js/auth.js' %}"></script>
+{% endblock %}
